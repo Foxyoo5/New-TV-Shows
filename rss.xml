@@ -1,30 +1,38 @@
-<?xml version='1.0' encoding='utf-8'?>
-<rss version="2.0"><channel><title>New Streaming TV Shows</title><link>https://www.themoviedb.org</link><description>Latest notable TV releases from major streaming services</description><lastBuildDate>Fri, 17 Jul 2026 23:06:40 +0000</lastBuildDate><item><title>Teach You a Lesson</title><link>https://www.themoviedb.org/tv/276161</link><guid>276161</guid><description>
-&lt;![CDATA[
-&lt;img src="https://image.tmdb.org/t/p/original/fMECSPrTmRClSViMsXFYmiYIcWP.jpg" /&gt;&lt;br/&gt;
-&lt;b&gt;Platform:&lt;/b&gt; Netflix&lt;br/&gt;
-&lt;b&gt;First Air Date:&lt;/b&gt; 2026-06-05&lt;br/&gt;&lt;br/&gt;
-An inspector from the Educational Rights Protection Bureau (ERPB) who is authorized by the government to use physical intervention and unconventional methods to discipline delinquent students and reform the educational system.
-]]&gt;
-</description></item><item><title>The Polygamist</title><link>https://www.themoviedb.org/tv/322430</link><guid>322430</guid><description>
-&lt;![CDATA[
-&lt;img src="https://image.tmdb.org/t/p/original/emnQZe22rYBCsbZ7h1TUAkYEzrZ.jpg" /&gt;&lt;br/&gt;
-&lt;b&gt;Platform:&lt;/b&gt; Netflix&lt;br/&gt;
-&lt;b&gt;First Air Date:&lt;/b&gt; 2026-06-12&lt;br/&gt;&lt;br/&gt;
-Social media darling, Joyce, is the picture of marital perfection — until her cheating husband's conquests ignite a scandalous emotional meltdown.
-]]&gt;
-</description></item><item><title>Elle</title><link>https://www.themoviedb.org/tv/254420</link><guid>254420</guid><description>
-&lt;![CDATA[
-&lt;img src="https://image.tmdb.org/t/p/original/dpH7Lyrs7z7MlTGgfeibryGnWAv.jpg" /&gt;&lt;br/&gt;
-&lt;b&gt;Platform:&lt;/b&gt; Prime Video&lt;br/&gt;
-&lt;b&gt;First Air Date:&lt;/b&gt; 2026-07-01&lt;br/&gt;&lt;br/&gt;
-Before Elle Woods was a fish-out-of-water at Harvard, we meet her in 1995 in the tumultuous waters of high school where she encounters tricky friendships, forbidden romance, and questionable fashion choices. In this unexpected chapter of her adolescence, we learn about the experiences that shaped Elle into the iconic young woman we've come to know and love.
-]]&gt;
-</description></item><item><title>Cape Fear</title><link>https://www.themoviedb.org/tv/277439</link><guid>277439</guid><description>
-&lt;![CDATA[
-&lt;img src="https://image.tmdb.org/t/p/original/3ZLy3cfQa9prahoRq1teMmr5pvW.jpg" /&gt;&lt;br/&gt;
-&lt;b&gt;Platform:&lt;/b&gt; Apple TV+&lt;br/&gt;
-&lt;b&gt;First Air Date:&lt;/b&gt; 2026-06-04&lt;br/&gt;&lt;br/&gt;
-When convicted murderer Max Cady is released from prison, he begins infiltrating the family of the married attorneys who helped put him behind bars.
-]]&gt;
-</description></item></channel></rss>
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>New Streaming TV Shows</title>
+  <link>https://www.themoviedb.org</link>
+  <description>Latest notable TV releases from major streaming services</description>
+  <lastBuildDate>Fri, 17 Jul 2026 23:19:46 +0000</lastBuildDate>
+
+    <item>
+      <title>Teach You a Lesson</title>
+      <link>https://www.themoviedb.org/tv/276161</link>
+      <guid isPermaLink="false">276161</guid>
+      <pubDate>Fri, 17 Jul 2026 23:19:46 +0000</pubDate>
+      <description><![CDATA[<img src="https://image.tmdb.org/t/p/original/fMECSPrTmRClSViMsXFYmiYIcWP.jpg"/><br/><b>Platform:</b> Netflix<br/><b>First Air Date:</b> 2026-06-05<br/><br/>An inspector from the Educational Rights Protection Bureau (ERPB) who is authorized by the government to use physical intervention and unconventional methods to discipline delinquent students and reform the educational system.]]></description>
+    </item>
+    <item>
+      <title>The Polygamist</title>
+      <link>https://www.themoviedb.org/tv/322430</link>
+      <guid isPermaLink="false">322430</guid>
+      <pubDate>Fri, 17 Jul 2026 23:19:46 +0000</pubDate>
+      <description><![CDATA[<img src="https://image.tmdb.org/t/p/original/emnQZe22rYBCsbZ7h1TUAkYEzrZ.jpg"/><br/><b>Platform:</b> Netflix<br/><b>First Air Date:</b> 2026-06-12<br/><br/>Social media darling, Joyce, is the picture of marital perfection — until her cheating husband's conquests ignite a scandalous emotional meltdown.]]></description>
+    </item>
+    <item>
+      <title>Elle</title>
+      <link>https://www.themoviedb.org/tv/254420</link>
+      <guid isPermaLink="false">254420</guid>
+      <pubDate>Fri, 17 Jul 2026 23:19:46 +0000</pubDate>
+      <description><![CDATA[<img src="https://image.tmdb.org/t/p/original/dpH7Lyrs7z7MlTGgfeibryGnWAv.jpg"/><br/><b>Platform:</b> Prime Video<br/><b>First Air Date:</b> 2026-07-01<br/><br/>Before Elle Woods was a fish-out-of-water at Harvard, we meet her in 1995 in the tumultuous waters of high school where she encounters tricky friendships, forbidden romance, and questionable fashion choices. In this unexpected chapter of her adolescence, we learn about the experiences that shaped Elle into the iconic young woman we've come to know and love.]]></description>
+    </item>
+    <item>
+      <title>Cape Fear</title>
+      <link>https://www.themoviedb.org/tv/277439</link>
+      <guid isPermaLink="false">277439</guid>
+      <pubDate>Fri, 17 Jul 2026 23:19:46 +0000</pubDate>
+      <description><![CDATA[<img src="https://image.tmdb.org/t/p/original/3ZLy3cfQa9prahoRq1teMmr5pvW.jpg"/><br/><b>Platform:</b> Apple TV+<br/><b>First Air Date:</b> 2026-06-04<br/><br/>When convicted murderer Max Cady is released from prison, he begins infiltrating the family of the married attorneys who helped put him behind bars.]]></description>
+    </item>
+</channel>
+</rss>
