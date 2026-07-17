@@ -1,0 +1,29 @@
+name: Update TV RSS Feed
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - run: python fetch_tmdb.py
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add rss.xml
+          git commit -m "Update RSS feed" || echo "No changes"
+          git push
