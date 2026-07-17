@@ -1,83 +1,199 @@
-import os
-import html
-import datetime
 import requests
+import datetime
+import xml.etree.ElementTree as ET
+from email.utils import format_datetime
 
-API_KEY = os.environ["TMDB_API_KEY"]
-TODAY = datetime.date.today()
-CUTOFF = (TODAY - datetime.timedelta(days=5)).isoformat()
-TODAY_STR = TODAY.isoformat()
+# ----------------------------
+# CONFIG
+# ----------------------------
 
-NETWORKS = "213|2739|6219|2552|1024|5237"
-PROVIDERS = "8|337|350|9"
+API_KEY = "YOUR_TMDB_API_KEY"
 
-def fetch(region):
-    params = {
-        "api_key": API_KEY,
-        "first_air_date.gte": CUTOFF,
-        "first_air_date.lte": TODAY_STR,
-        "with_networks": NETWORKS,
-        "with_watch_providers": PROVIDERS,
-        "watch_region": region,
-        "with_original_language": "en",
-        "language": "en-US",
-        "sort_by": "first_air_date.desc",
-    }
-    resp = requests.get("https://api.themoviedb.org/3/discover/tv", params=params, timeout=30)
-    resp.raise_for_status()
-    return resp.json().get("results", [])
+LANGUAGE = "en-GB"
 
-shows_by_id = {}
-for region in ["GB", "US"]:
-    for show in fetch(region):
-        shows_by_id[show["id"]] = show
+NETWORKS = "213|2739|2552|1024|49"
+# Netflix | Disney+ | Apple TV+ | Prime Video | MGM+
 
-shows = sorted(shows_by_id.values(), key=lambda s: s.get("first_air_date", ""), reverse=True)
+DAYS_BACK = 120
+MAX_RESULTS = 30
 
-now = datetime.datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
-items = []
+today = datetime.date.today()
+start_date = today - datetime.timedelta(days=DAYS_BACK)
+
+BASE_URL = "https://api.themoviedb.org/3/discover/tv"
+
+# ----------------------------
+# Helper
+# ----------------------------
+
+def fetch(params):
+    results = []
+    page = 1
+
+    while True:
+        params["page"] = page
+
+        r = requests.get(
+            BASE_URL,
+            params=params,
+            timeout=30
+        )
+
+        r.raise_for_status()
+
+        data = r.json()
+
+        results.extend(data["results"])
+
+        if page >= data["total_pages"] or page >= 3:
+            break
+
+        page += 1
+
+    return results
+
+
+# ----------------------------
+# Query 1
+# Recent premieres
+# ----------------------------
+
+recent = fetch({
+    "api_key": API_KEY,
+    "language": LANGUAGE,
+    "sort_by": "first_air_date.desc",
+    "include_adult": "false",
+    "include_null_first_air_dates": "false",
+    "with_networks": NETWORKS,
+    "first_air_date.gte": start_date.isoformat(),
+    "first_air_date.lte": today.isoformat(),
+    "vote_count.gte": 15,
+    "vote_average.gte": 6
+})
+
+# ----------------------------
+# Query 2
+# Popular shows from same networks
+# ----------------------------
+
+popular = fetch({
+    "api_key": API_KEY,
+    "language": LANGUAGE,
+    "sort_by": "popularity.desc",
+    "include_adult": "false",
+    "include_null_first_air_dates": "false",
+    "with_networks": NETWORKS,
+    "vote_count.gte": 15,
+    "vote_average.gte": 6
+})
+
+# ----------------------------
+# Merge duplicates
+# ----------------------------
+
+shows = {}
+
+for show in recent + popular:
+    shows[show["id"]] = show
+
+shows = list(shows.values())
+
+# ----------------------------
+# Score shows
+# ----------------------------
 
 for show in shows:
-    title = html.escape(show.get("name", "Untitled"))
-    show_id = show.get("id")
-    link = "https://www.themoviedb.org/tv/" + str(show_id)
-    poster_path = show.get("poster_path")
-    overview = html.escape(show.get("overview", "") or "")
 
-    if poster_path:
-        poster_url = "https://image.tmdb.org/t/p/w500" + poster_path
-        img_tag = "<img src=" + chr(34) + poster_url + chr(34) + "/><br/>"
-        desc_body = img_tag + overview
-        enclosure = "<enclosure url=" + chr(34) + poster_url + chr(34) + " type=" + chr(34) + "image/jpeg" + chr(34) + "/>"
+    first = show.get("first_air_date")
+
+    if first:
+        age = (today - datetime.date.fromisoformat(first)).days
     else:
-        desc_body = overview
-        enclosure = ""
+        age = 9999
 
-    desc = "<![CDATA[" + desc_body + "]]>"
-    guid = str(show_id) + "-" + TODAY_STR
+    popularity = show.get("popularity", 0)
+    votes = show.get("vote_count", 0)
+    rating = show.get("vote_average", 0)
 
-    item = "\n    <item>\n"
-    item += "      <title>" + title + "</title>\n"
-    item += "      <link>" + link + "</link>\n"
-    item += "      <guid isPermaLink=" + chr(34) + "false" + chr(34) + ">" + guid + "</guid>\n"
-    item += "      <pubDate>" + now + "</pubDate>\n"
-    item += "      " + enclosure + "\n"
-    item += "      <description>" + desc + "</description>\n"
-    item += "    </item>"
-    items.append(item)
+    score = (
+        popularity * 2
+        + votes * 0.35
+        + rating * 10
+        - age * 0.35
+    )
 
-all_items = "".join(items)
+    show["score"] = score
 
-rss = "<?xml version=" + chr(34) + "1.0" + chr(34) + " encoding=" + chr(34) + "UTF-8" + chr(34) + "?>\n"
-rss += "<rss version=" + chr(34) + "2.0" + chr(34) + ">\n"
-rss += "<channel>\n"
-rss += "  <title>New TV Shows</title>\n"
-rss += "  <link>https://www.themoviedb.org/tv/airing-today</link>\n"
-rss += "  <description>Newest TV shows on Netflix, Disney+, MGM+, Apple TV+, Prime Video, Sky Max</description>\n"
-rss += "  <lastBuildDate>" + now + "</lastBuildDate>\n"
-rss += all_items + "\n"
-rss += "</channel>\n"
-rss += "</rss>\n"
+shows.sort(
+    key=lambda x: x["score"],
+    reverse=True
+)
 
-with open("rss.xml", "w", encoding="utf-8") as f:
-    f.write(rss)
+shows = shows[:MAX_RESULTS]
+
+# ----------------------------
+# Build RSS
+# ----------------------------
+
+rss = ET.Element("rss")
+rss.set("version", "2.0")
+
+channel = ET.SubElement(rss, "channel")
+
+ET.SubElement(channel, "title").text = "New TV Shows"
+ET.SubElement(channel, "link").text = "https://www.themoviedb.org"
+ET.SubElement(channel, "description").text = "Recently released TV shows"
+
+ET.SubElement(channel, "lastBuildDate").text = format_datetime(
+    datetime.datetime.now(datetime.timezone.utc)
+)
+
+for show in shows:
+
+    item = ET.SubElement(channel, "item")
+
+    ET.SubElement(item, "title").text = show["name"]
+
+    ET.SubElement(
+        item,
+        "link"
+    ).text = f"https://www.themoviedb.org/tv/{show['id']}"
+
+    ET.SubElement(
+        item,
+        "guid"
+    ).text = str(show["id"])
+
+    air = show.get("first_air_date", "")
+
+    overview = show.get("overview", "")
+
+    poster = ""
+
+    if show.get("poster_path"):
+        poster = (
+            "https://image.tmdb.org/t/p/w780"
+            + show["poster_path"]
+        )
+
+    description = f"""
+<![CDATA[
+<img src="{poster}" /><br/>
+<b>First Air Date:</b> {air}<br/><br/>
+{overview}
+]]>
+"""
+
+    ET.SubElement(
+        item,
+        "description"
+    ).text = description
+
+tree = ET.ElementTree(rss)
+tree.write(
+    "rss.xml",
+    encoding="utf-8",
+    xml_declaration=True
+)
+
+print(f"Generated rss.xml with {len(shows)} shows.")
