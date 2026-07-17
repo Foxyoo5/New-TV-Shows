@@ -13,11 +13,13 @@ params = {
     "air_date.lte": TODAY,
     "with_networks": NETWORKS,
     "with_original_language": "en",
+    "watch_region": "GB",
+    "vote_count.gte": 1,
     "language": "en-US",
     "sort_by": "first_air_date.desc",
 }
 
-resp = requests.get("https://api.themoviedb.org/tv/airing-today", params=params, timeout=30)
+resp = requests.get("https://api.themoviedb.org/3/discover/tv", params=params, timeout=30)
 resp.raise_for_status()
 shows = resp.json().get("results", [])
 
