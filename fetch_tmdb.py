@@ -121,4 +121,88 @@ def select_top_shows(shows):
             if service_counts[service] < service_limits[service]:
                 selected.append(show)
                 service_counts[service] += 1
-        if
+        if len(selected) >= MAX_SHOWS:
+            break
+
+    return selected
+
+
+def create_rss(shows):
+    now = format_datetime(datetime.datetime.now(datetime.timezone.utc))
+
+    items = []
+    for show in shows:
+        title = show.get("name", "Unknown")
+        poster = ""
+        if show.get("poster_path"):
+            poster = "https://image.tmdb.org/t/p/original" + show["poster_path"]
+
+        overview = show.get("overview", "")
+        network = show.get("matched_network", "")
+        first_air = show.get("first_air_date", "")
+        show_id = show["id"]
+        link = "https://www.themoviedb.org/tv/" + str(show_id)
+
+        img_tag = "<img src=" + chr(34) + poster + chr(34) + "/><br/>"
+        body = img_tag
+        body += "<b>Platform:</b> " + network + "<br/>"
+        body += "<b>First Air Date:</b> " + first_air + "<br/><br/>"
+        body += overview
+        desc = "<![CDATA[" + body + "]]>"
+
+        item = "\n    <item>\n"
+        item += "      <title>" + title + "</title>\n"
+        item += "      <link>" + link + "</link>\n"
+        item += "      <guid isPermaLink=" + chr(34) + "false" + chr(34) + ">" + str(show_id) + "</guid>\n"
+        item += "      <pubDate>" + now + "</pubDate>\n"
+        item += "      <description>" + desc + "</description>\n"
+        item += "    </item>"
+        items.append(item)
+
+    all_items = "".join(items)
+
+    rss = "<?xml version=" + chr(34) + "1.0" + chr(34) + " encoding=" + chr(34) + "UTF-8" + chr(34) + "?>\n"
+    rss += "<rss version=" + chr(34) + "2.0" + chr(34) + ">\n"
+    rss += "<channel>\n"
+    rss += "  <title>New Streaming TV Shows</title>\n"
+    rss += "  <link>https://www.themoviedb.org</link>\n"
+    rss += "  <description>Latest notable TV releases from major streaming services</description>\n"
+    rss += "  <lastBuildDate>" + now + "</lastBuildDate>\n"
+    rss += all_items + "\n"
+    rss += "</channel>\n"
+    rss += "</rss>\n"
+
+    with open("rss.xml", "w", encoding="utf-8") as f:
+        f.write(rss)
+
+    print("Created rss.xml with " + str(len(shows)) + " shows")
+
+
+def main():
+    print("Starting TMDB TV feed generation...")
+    collected = []
+
+    for network_name, network_id in NETWORKS.items():
+        results = discover_network(network_id)
+        for show in results:
+            collected.append((show, network_name))
+
+    print("Total collected: " + str(len(collected)))
+
+    cleaned = clean_results(collected)
+
+    print("Top ranked shows:")
+    for show in cleaned[:10]:
+        print(show["name"] + " - " + str(show.get("matched_network")) + " - score: " + str(round(show["score"], 2)))
+
+    selected = select_top_shows(cleaned)
+
+    print("Selected:")
+    for show in selected:
+        print(show["name"] + " (" + str(show.get("matched_network")) + ")")
+
+    create_rss(selected)
+
+
+if __name__ == "__main__":
+    main()
