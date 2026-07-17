@@ -4,15 +4,18 @@ import datetime
 import requests
 
 API_KEY = os.environ["TMDB_API_KEY"]
-TODAY = datetime.date.today().isoformat()
-NETWORKS = "213|2739|6219|2552|1024"
+TODAY = datetime.date.today()
+CUTOFF = (TODAY - datetime.timedelta(days=5)).isoformat()
+TODAY_STR = TODAY.isoformat()
+
+NETWORKS = "213|2739|6219|2552|1024|5237"
 PROVIDERS = "8|337|350|9"
 
 def fetch(region):
     params = {
         "api_key": API_KEY,
-        "air_date.gte": TODAY,
-        "air_date.lte": TODAY,
+        "first_air_date.gte": CUTOFF,
+        "first_air_date.lte": TODAY_STR,
         "with_networks": NETWORKS,
         "with_watch_providers": PROVIDERS,
         "watch_region": region,
@@ -51,7 +54,7 @@ for show in shows:
         enclosure = ""
 
     desc = "<![CDATA[" + desc_body + "]]>"
-    guid = str(show_id) + "-" + TODAY
+    guid = str(show_id) + "-" + TODAY_STR
 
     item = "\n    <item>\n"
     item += "      <title>" + title + "</title>\n"
@@ -70,7 +73,7 @@ rss += "<rss version=" + chr(34) + "2.0" + chr(34) + ">\n"
 rss += "<channel>\n"
 rss += "  <title>New TV Shows</title>\n"
 rss += "  <link>https://www.themoviedb.org/tv/airing-today</link>\n"
-rss += "  <description>TV shows airing today on Netflix, Disney+, MGM+, Apple TV+, Prime Video</description>\n"
+rss += "  <description>Newest TV shows on Netflix, Disney+, MGM+, Apple TV+, Prime Video, Sky Max</description>\n"
 rss += "  <lastBuildDate>" + now + "</lastBuildDate>\n"
 rss += all_items + "\n"
 rss += "</channel>\n"
