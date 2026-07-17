@@ -6,22 +6,30 @@ import requests
 API_KEY = os.environ["TMDB_API_KEY"]
 TODAY = datetime.date.today().isoformat()
 NETWORKS = "213|2739|6219|2552|1024"
+PROVIDERS = "8|337|350|9"
 
-params = {
-    "api_key": API_KEY,
-    "air_date.gte": TODAY,
-    "air_date.lte": TODAY,
-    "with_networks": NETWORKS,
-    "with_original_language": "en",
-    "watch_region": "GB",
-    "vote_count.gte": 1,
-    "language": "en-US",
-    "sort_by": "first_air_date.desc",
-}
+def fetch(region):
+    params = {
+        "api_key": API_KEY,
+        "air_date.gte": TODAY,
+        "air_date.lte": TODAY,
+        "with_networks": NETWORKS,
+        "with_watch_providers": PROVIDERS,
+        "watch_region": region,
+        "with_original_language": "en",
+        "language": "en-US",
+        "sort_by": "first_air_date.desc",
+    }
+    resp = requests.get("https://api.themoviedb.org/3/discover/tv", params=params, timeout=30)
+    resp.raise_for_status()
+    return resp.json().get("results", [])
 
-resp = requests.get("https://api.themoviedb.org/3/discover/tv", params=params, timeout=30)
-resp.raise_for_status()
-shows = resp.json().get("results", [])
+shows_by_id = {}
+for region in ["GB", "US"]:
+    for show in fetch(region):
+        shows_by_id[show["id"]] = show
+
+shows = sorted(shows_by_id.values(), key=lambda s: s.get("first_air_date", ""), reverse=True)
 
 now = datetime.datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S +0000")
 items = []
