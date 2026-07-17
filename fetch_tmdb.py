@@ -12,6 +12,7 @@ params = {
     "air_date.gte": TODAY,
     "air_date.lte": TODAY,
     "with_networks": NETWORKS,
+    "with_original_language": "en",
     "language": "en-US",
     "sort_by": "first_air_date.desc",
     "include_null_first_air_dates": "false",
@@ -36,30 +37,4 @@ for show in shows:
         desc = f'<![CDATA[<img src="{poster_url}"/><br/>{overview}]]>'
         enclosure = f'<enclosure url="{poster_url}" type="image/jpeg"/>'
     else:
-        desc = f"<![CDATA[{overview}]]>"
-        enclosure = ""
-
-    items.append(f"""
-    <item>
-      <title>{title}</title>
-      <link>{link}</link>
-      <guid isPermaLink="false">{show_id}-{TODAY}</guid>
-      <pubDate>{now}</pubDate>
-      {enclosure}
-      <description>{desc}</description>
-    </item>""")
-
-rss = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-<channel>
-  <title>New TV Shows</title>
-  <link>https://www.themoviedb.org/tv/airing-today</link>
-  <description>TV shows airing today on Netflix, Disney+, MGM+, Apple TV+, Prime Video</description>
-  <lastBuildDate>{now}</lastBuildDate>
-  {"".join(items)}
-</channel>
-</rss>
-"""
-
-with open("rss.xml", "w", encoding="utf-8") as f:
-    f.write(rss)
+        desc = f"
