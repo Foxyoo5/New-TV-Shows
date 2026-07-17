@@ -9,7 +9,8 @@ NETWORKS = "213|2739|6219|2552|1024"
 
 params = {
     "api_key": API_KEY,
-    "first_air_date.lte": TODAY,
+    "air_date.gte": TODAY,
+    "air_date.lte": TODAY,
     "with_networks": NETWORKS,
     "with_original_language": "en",
     "language": "en-US",
@@ -39,31 +40,4 @@ for show in shows:
         desc_body = overview
         enclosure = ""
 
-    desc = "<![CDATA[" + desc_body + "]]>"
-    guid = str(show_id) + "-" + TODAY
-
-    item = "\n    <item>\n"
-    item += "      <title>" + title + "</title>\n"
-    item += "      <link>" + link + "</link>\n"
-    item += "      <guid isPermaLink=" + chr(34) + "false" + chr(34) + ">" + guid + "</guid>\n"
-    item += "      <pubDate>" + now + "</pubDate>\n"
-    item += "      " + enclosure + "\n"
-    item += "      <description>" + desc + "</description>\n"
-    item += "    </item>"
-    items.append(item)
-
-all_items = "".join(items)
-
-rss = "<?xml version=" + chr(34) + "1.0" + chr(34) + " encoding=" + chr(34) + "UTF-8" + chr(34) + "?>\n"
-rss += "<rss version=" + chr(34) + "2.0" + chr(34) + ">\n"
-rss += "<channel>\n"
-rss += "  <title>New TV Shows</title>\n"
-rss += "  <link>https://www.themoviedb.org/tv/airing-today</link>\n"
-rss += "  <description>Newest TV shows on Netflix, Disney+, MGM+, Apple TV+, Prime Video</description>\n"
-rss += "  <lastBuildDate>" + now + "</lastBuildDate>\n"
-rss += all_items + "\n"
-rss += "</channel>\n"
-rss += "</rss>\n"
-
-with open("rss.xml", "w", encoding="utf-8") as f:
-    f.write(rss)
+    desc = "
