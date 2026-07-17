@@ -9,13 +9,11 @@ NETWORKS = "213|2739|6219|2552|1024"
 
 params = {
     "api_key": API_KEY,
-    "air_date.gte": TODAY,
-    "air_date.lte": TODAY,
+    "first_air_date.lte": TODAY,
     "with_networks": NETWORKS,
     "with_original_language": "en",
     "language": "en-US",
     "sort_by": "first_air_date.desc",
-    "include_null_first_air_dates": "false",
 }
 
 resp = requests.get("https://api.themoviedb.org/3/discover/tv", params=params, timeout=30)
@@ -61,7 +59,7 @@ rss += "<rss version=" + chr(34) + "2.0" + chr(34) + ">\n"
 rss += "<channel>\n"
 rss += "  <title>New TV Shows</title>\n"
 rss += "  <link>https://www.themoviedb.org/tv/airing-today</link>\n"
-rss += "  <description>TV shows airing today on Netflix, Disney+, MGM+, Apple TV+, Prime Video</description>\n"
+rss += "  <description>Newest TV shows on Netflix, Disney+, MGM+, Apple TV+, Prime Video</description>\n"
 rss += "  <lastBuildDate>" + now + "</lastBuildDate>\n"
 rss += all_items + "\n"
 rss += "</channel>\n"
