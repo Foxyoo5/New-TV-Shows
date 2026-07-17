@@ -40,4 +40,31 @@ for show in shows:
         desc_body = overview
         enclosure = ""
 
-    desc = "
+    desc = "<![CDATA[" + desc_body + "]]>"
+    guid = str(show_id) + "-" + TODAY
+
+    item = "\n    <item>\n"
+    item += "      <title>" + title + "</title>\n"
+    item += "      <link>" + link + "</link>\n"
+    item += "      <guid isPermaLink=" + chr(34) + "false" + chr(34) + ">" + guid + "</guid>\n"
+    item += "      <pubDate>" + now + "</pubDate>\n"
+    item += "      " + enclosure + "\n"
+    item += "      <description>" + desc + "</description>\n"
+    item += "    </item>"
+    items.append(item)
+
+all_items = "".join(items)
+
+rss = "<?xml version=" + chr(34) + "1.0" + chr(34) + " encoding=" + chr(34) + "UTF-8" + chr(34) + "?>\n"
+rss += "<rss version=" + chr(34) + "2.0" + chr(34) + ">\n"
+rss += "<channel>\n"
+rss += "  <title>New TV Shows</title>\n"
+rss += "  <link>https://www.themoviedb.org/tv/airing-today</link>\n"
+rss += "  <description>TV shows airing today on Netflix, Disney+, MGM+, Apple TV+, Prime Video</description>\n"
+rss += "  <lastBuildDate>" + now + "</lastBuildDate>\n"
+rss += all_items + "\n"
+rss += "</channel>\n"
+rss += "</rss>\n"
+
+with open("rss.xml", "w", encoding="utf-8") as f:
+    f.write(rss)
