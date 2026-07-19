@@ -164,7 +164,7 @@ def create_rss(shows):
     rss = "<?xml version=" + chr(34) + "1.0" + chr(34) + " encoding=" + chr(34) + "UTF-8" + chr(34) + "?>\n"
     rss += "<rss version=" + chr(34) + "2.0" + chr(34) + ">\n"
     rss += "<channel>\n"
-    rss += "  <title>New Streaming TV Shows</title>\n"
+    rss += "  <title>New TV Shows</title>\n"
     rss += "  <link>https://www.themoviedb.org</link>\n"
     rss += "  <description>Latest notable TV releases from major streaming services</description>\n"
     rss += "  <lastBuildDate>" + now + "</lastBuildDate>\n"
